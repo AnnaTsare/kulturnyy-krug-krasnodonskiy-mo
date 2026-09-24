@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Культурный круг — запись на события, создание афиш и сбор пожеланий посетителей">
+  <title>Культурный круг | Краснодонский МО</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prata&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="На главную">
+      <span class="brand-mark">К</span>
+      <span class="brand-name"><span data-site-name>Культурный круг</span><small data-site-municipality>Краснодонский МО</small></span>
+    </a>
+    <button class="menu-button" id="menuButton" aria-label="Открыть меню" aria-expanded="false">Меню</button>
+    <nav id="mainNav">
+      <a href="#events">События</a>
+      <a href="#cinema">Кино</a>
+      <a href="#poster">Афиши</a>
+      <a href="#feedback">Пожелания</a>
+      <a href="#youth">Молодёжи</a>
+      <button class="text-button" data-open-admin>Для учреждения</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <p class="eyebrow" id="heroEyebrow">Городская культурная платформа</p>
+        <h1><span id="heroTitle">Культура начинается</span> <em id="heroAccent">со встречи</em></h1>
+        <p class="hero-lead" id="heroDescription">Находите события, бронируйте места и помогайте учреждениям создавать программу, которая действительно нужна людям.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#events">Выбрать событие</a>
+          <a class="button ghost" href="#feedback">Предложить идею</a>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="sun"></div>
+        <div class="hero-card">
+          <span>Ближайшее событие</span>
+          <strong id="nextEventTitle">Загрузка...</strong>
+          <small id="nextEventDate"></small>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-strip" aria-label="Статистика">
+      <div><strong id="eventCount">0</strong><span>событий в афише</span></div>
+      <div><strong id="visitorCount">0</strong><span>зрителей записано</span></div>
+      <div><strong id="ideaCount">0</strong><span>идей от жителей</span></div>
+    </section>
+
+    <section class="section events-section" id="events">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Афиша</p>
+          <h2>Ближайшие события</h2>
+        </div>
+        <div class="filters" id="filters" aria-label="Фильтр событий">
+          <button class="filter active" data-filter="Все">Все</button>
+          <button class="filter" data-filter="Концерт">Концерты</button>
+          <button class="filter" data-filter="Театр">Театр</button>
+          <button class="filter" data-filter="Мастер-класс">Мастер-классы</button>
+          <button class="filter" data-filter="Лекция">Лекции</button>
+        </div>
+      </div>
+      <div class="event-grid" id="eventGrid"></div>
+      <div class="empty-state hidden" id="eventsEmpty">В этой категории пока нет событий.</div>
+    </section>
+
+    <section class="section cinema-section" id="cinema">
+      <div class="section-heading cinema-heading">
+        <div>
+          <p class="eyebrow light">Киноафиша</p>
+          <h2>На большом экране</h2>
+        </div>
+        <div class="cinema-filters" id="cinemaFilters" aria-label="Выбор кинозала">
+          <button class="cinema-filter active" data-cinema="Все">Все кинозалы</button>
+          <button class="cinema-filter" data-cinema="Победа">Краснодон</button>
+          <button class="cinema-filter" data-cinema="Родина">Суходольск</button>
+          <button class="cinema-filter" data-cinema="Мир">Молодгвардейск</button>
+        </div>
+      </div>
+      <div class="cinema-grid" id="cinemaGrid"></div>
+      <p class="schedule-note">Расписание и стоимость билетов являются демонстрационными. Перед посещением уточняйте информацию в кассе выбранного кинозала.</p>
+    </section>
+
+    <section class="section pushkin-section" id="pushkin-card">
+      <div class="pushkin-card-visual" aria-hidden="true">
+        <span class="pushkin-label">Пушкинская карта</span>
+        <strong>Культура<br>доступна</strong>
+        <span class="pushkin-number">14–22</span>
+      </div>
+      <div class="pushkin-copy">
+        <p class="eyebrow">На события за счёт государства</p>
+        <h2>Пушкинская карта</h2>
+        <p>Программа для молодых людей от 14 до 22 лет включительно. Картой можно оплачивать билеты на участвующие в программе спектакли, концерты, выставки и российские фильмы.</p>
+        <div class="steps">
+          <div><span>01</span><strong>Оформите карту</strong><p>Подтвердите учётную запись на Госуслугах и оформите карту в официальном приложении.</p></div>
+          <div><span>02</span><strong>Найдите событие</strong><p>Проверьте наличие отметки «Пушкинская карта» на странице события.</p></div>
+          <div><span>03</span><strong>Оплатите билет</strong><p>Используйте карту при покупке. Билет является именным и не передаётся другому человеку.</p></div>
+        </div>
+        <div class="info-actions">
+          <a class="button primary" href="https://www.gosuslugi.ru/culture" target="_blank" rel="noopener noreferrer">Узнать на Госуслугах</a>
+          <a class="official-link" href="https://culture.ru/pushkinskaya-karta" target="_blank" rel="noopener noreferrer">Афиша программы на Культура.РФ →</a>
+        </div>
+        <small class="official-note">Актуальный размер лимита и правила программы проверяйте на официальных ресурсах.</small>
+      </div>
+    </section>
+
+    <section class="section poster-section" id="poster">
+      <div class="poster-intro">
+        <p class="eyebrow light">Творческая мастерская</p>
+        <h2>Афиша за пару минут</h2>
+        <p>Выберите событие и стиль. Мы подготовим готовую афишу, которую можно скачать и опубликовать.</p>
+        <div class="poster-controls">
+          <label>Событие<select id="posterEvent"></select></label>
+          <fieldset>
+            <legend>Стиль</legend>
+            <div class="style-buttons">
+              <button class="style-choice active" data-style="avant">Авангард</button>
+              <button class="style-choice" data-style="classic">Классика</button>
+              <button class="style-choice" data-style="bright">Яркий</button>
+            </div>
+          </fieldset>
+          <button class="button cream" id="downloadPoster">Скачать PNG</button>
+        </div>
+      </div>
+      <div class="poster-preview-wrap">
+        <canvas id="posterCanvas" width="700" height="900" aria-label="Предпросмотр афиши"></canvas>
+      </div>
+    </section>
+
+    <section class="section feedback-section" id="feedback">
+      <div class="feedback-copy">
+        <p class="eyebrow">Ваш голос важен</p>
+        <h2>Какого события не хватает городу?</h2>
+        <p>Расскажите о событии, на которое вам хотелось бы прийти. Ответы помогут составить будущую программу.</p>
+        <div class="quote">«Культурная программа становится живой, когда её создают вместе»</div>
+      </div>
+      <form class="feedback-form" id="feedbackForm">
+        <label>Как к вам обращаться?<input name="name" required placeholder="Ваше имя"></label>
+        <label>Что вы предлагаете?<textarea name="idea" required rows="4" placeholder="Например, вечер современной поэзии..."></textarea></label>
+        <label>Какой формат вам ближе?
+          <select name="format" required>
+            <option value="">Выберите формат</option>
+            <option>Концерт</option><option>Спектакль</option><option>Выставка</option>
+            <option>Лекция</option><option>Мастер-класс</option><option>Другое</option>
+          </select>
+        </label>
+        <label>Контакт для ответа <span>(необязательно)</span><input name="contact" placeholder="Телефон или электронная почта"></label>
+        <label class="check"><input type="checkbox" required><span>Согласен на обработку персональных данных</span></label>
+        <button class="button primary" type="submit">Отправить пожелание</button>
+      </form>
+    </section>
+
+    <section class="section youth-section" id="youth">
+      <div class="youth-heading">
+        <p class="eyebrow light">Старт в профессии</p>
+        <h2>Возможности для молодёжи</h2>
+        <p>Работа, практика и образование для тех, кто хочет связать профессиональный путь с культурой.</p>
+      </div>
+      <div class="opportunity-layout">
+        <section class="vacancies-block">
+          <div class="block-title"><span>01</span><div><p>Работа рядом</p><h3>Молодёжные вакансии</h3></div></div>
+          <div class="vacancy-list">
+            <article class="vacancy-card"><div><span class="tag">Без опыта</span><h4>Помощник организатора событий</h4><p>Помощь в подготовке площадки, встреча гостей и сопровождение городских мероприятий.</p></div><a href="mailto:culture@example.ru?subject=Отклик: помощник организатора">Откликнуться →</a></article>
+            <article class="vacancy-card"><div><span class="tag">Стажировка</span><h4>Ассистент медиагруппы</h4><p>Фото и видео событий, подготовка публикаций и работа с социальными сетями учреждения.</p></div><a href="mailto:culture@example.ru?subject=Отклик: ассистент медиагруппы">Откликнуться →</a></article>
+            <article class="vacancy-card"><div><span class="tag">Частичная занятость</span><h4>Администратор культурной площадки</h4><p>Работа со зрителями, регистрация участников и координация пространства во время событий.</p></div><a href="mailto:culture@example.ru?subject=Отклик: администратор площадки">Откликнуться →</a></article>
+          </div>
+          <p class="vacancy-note">Контакты и условия представлены как шаблон. Учреждение может заменить их актуальными вакансиями.</p>
+        </section>
+        <section class="education-block" id="education">
+          <div class="block-title"><span>02</span><div><p>Учёба с перспективой</p><h3>Целевое обучение</h3></div></div>
+          <p>Целевое обучение позволяет поступить в колледж или вуз по отдельному конкурсу и учиться при поддержке будущего работодателя. После выпуска необходимо отработать установленный договором срок.</p>
+          <ul class="education-list">
+            <li><strong>Выберите предложение</strong><span>Найдите подходящую специальность и заказчика на платформе «Работа России».</span></li>
+            <li><strong>Подайте заявку</strong><span>Ознакомьтесь с мерами поддержки, требованиями и условиями последующего трудоустройства.</span></li>
+            <li><strong>Заключите договор</strong><span>После зачисления подпишите договор с заказчиком целевого обучения.</span></li>
+          </ul>
+          <div class="education-directions"><span>Режиссура</span><span>Библиотечное дело</span><span>Дизайн</span><span>Музеология</span><span>Звукорежиссура</span></div>
+          <a class="button cream" href="https://trudvsem.ru/target-education/search" target="_blank" rel="noopener noreferrer">Найти предложения</a>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand footer-brand" href="#home"><span class="brand-mark">К</span><span class="brand-name"><span data-site-name>Культурный круг</span><small data-site-municipality>Краснодонский МО</small></span></a>
+    <p id="footerDescription">Единое пространство для учреждений культуры и их посетителей.</p>
+    <span>© <span id="year"></span></span>
+  </footer>
+
+  <dialog id="bookingDialog">
+    <button class="dialog-close" data-close-dialog aria-label="Закрыть">×</button>
+    <p class="eyebrow">Регистрация</p>
+    <h2 id="bookingTitle">Запись на событие</h2>
+    <p class="dialog-meta" id="bookingMeta"></p>
+    <form id="bookingForm">
+      <input type="hidden" name="eventId">
+      <label>Имя и фамилия<input name="name" required autocomplete="name" placeholder="Иван Петров"></label>
+      <label>Телефон<input name="phone" required autocomplete="tel" inputmode="tel" placeholder="+7 900 000-00-00"></label>
+      <label>Электронная почта<input name="email" type="email" autocomplete="email" placeholder="mail@example.ru"></label>
+      <label>Количество посетителей<select name="tickets"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+      <label class="check"><input type="checkbox" required><span>Согласен на обработку персональных данных</span></label>
+      <button class="button primary" type="submit">Подтвердить запись</button>
+    </form>
+  </dialog>
+
+  <dialog id="ticketDialog">
+    <button class="dialog-close" data-close-ticket aria-label="Закрыть">×</button>
+    <p class="eyebrow">Билеты в кино</p>
+    <h2 id="ticketTitle">Покупка билета</h2>
+    <p class="dialog-meta" id="ticketCinema"></p>
+    <form id="ticketForm">
+      <input type="hidden" name="movieId">
+      <label>Сеанс<select name="session" id="ticketSession" required></select></label>
+      <label>Имя и фамилия<input name="name" required autocomplete="name" placeholder="Иван Петров"></label>
+      <label>Телефон<input name="phone" required autocomplete="tel" inputmode="tel" placeholder="+7 900 000-00-00"></label>
+      <label>Количество билетов<select name="tickets"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+      <label class="check"><input type="checkbox" required><span>Согласен на обработку персональных данных</span></label>
+      <button class="button primary" type="submit">Перейти к оплате</button>
+      <small class="payment-note">В демонстрационной версии оплата не списывается.</small>
+    </form>
+  </dialog>
+
+  <dialog class="admin-dialog" id="adminDialog">
+    <button class="dialog-close" data-close-admin aria-label="Закрыть">×</button>
+    <div class="admin-head">
+      <div><p class="eyebrow">Рабочее пространство</p><h2>Панель учреждения</h2></div>
+      <div class="admin-actions"><button class="button ghost small" id="showSiteForm">Настройки сайта</button><button class="button primary small" id="showEventForm">+ Добавить событие</button></div>
+    </div>
+    <div class="admin-metrics" id="adminMetrics"></div>
+    <form class="site-form event-form hidden" id="siteForm">
+      <div class="editor-title"><div><p class="eyebrow">Содержание страницы</p><h3>Настройки сайта</h3></div><button class="dialog-close inline-close" type="button" id="cancelSite" aria-label="Закрыть настройки">×</button></div>
+      <div class="form-grid">
+        <label>Название проекта<input name="siteName" required maxlength="50"></label>
+        <label>Муниципалитет<input name="municipality" required maxlength="60"></label>
+        <label>Строка над заголовком<input name="eyebrow" required maxlength="70"></label>
+        <label>Основная часть заголовка<input name="heroTitle" required maxlength="60"></label>
+        <label>Выделенная часть заголовка<input name="heroAccent" required maxlength="40"></label>
+        <label>Контактная почта<input name="contactEmail" type="email" required></label>
+      </div>
+      <label>Описание на главном экране<textarea name="heroDescription" rows="3" required maxlength="240"></textarea></label>
+      <label>Описание в подвале<textarea name="footerDescription" rows="2" required maxlength="160"></textarea></label>
+      <div class="form-actions"><button class="button ghost" type="button" id="resetSite">Вернуть исходные</button><button class="button primary" type="submit">Сохранить настройки</button></div>
+    </form>
+    <form class="event-form hidden" id="eventForm">
+      <input type="hidden" name="eventId">
+      <h3 id="eventFormTitle">Новое событие</h3>
+      <div class="form-grid">
+        <label>Название<input name="title" required placeholder="Название события"></label>
+        <label>Категория<select name="category" required><option>Концерт</option><option>Театр</option><option>Мастер-класс</option><option>Лекция</option><option>Выставка</option></select></label>
+        <label>Дата и время<input name="date" type="datetime-local" required></label>
+        <label>Место<input name="venue" required placeholder="Зал или адрес"></label>
+        <label>Количество мест<input name="capacity" type="number" min="1" value="50" required></label>
+        <label>Цвет афиши<input name="color" type="color" value="#e55b32"></label>
+      </div>
+      <label>Описание<textarea name="description" rows="3" required placeholder="Коротко расскажите о событии"></textarea></label>
+      <div class="form-actions"><button class="button ghost" type="button" id="cancelEvent">Отмена</button><button class="button primary" id="saveEventButton" type="submit">Опубликовать</button></div>
+    </form>
+    <div class="admin-columns">
+      <section><h3>События и записи</h3><div id="adminEvents" class="admin-list"></div></section>
+      <section><h3>Пожелания посетителей</h3><div id="adminIdeas" class="admin-list"></div></section>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
