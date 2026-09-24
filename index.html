@@ -21,6 +21,7 @@
     <nav id="mainNav">
       <a href="#events">События</a>
       <a href="#directions">Направления</a>
+      <a href="#enrollment">Запись детей</a>
       <a href="#cinema">Кино</a>
       <a href="#poster">Афиши</a>
       <a href="#feedback">Пожелания</a>
@@ -55,10 +56,33 @@
     <section class="section directions-section" id="directions">
       <div class="section-heading"><div><p class="eyebrow">Учреждения культуры</p><h2>Выберите направление</h2></div><p class="directions-lead">События, творчество и места встреч по всему Краснодонскому муниципальному округу.</p></div>
       <div class="direction-grid">
-        <a class="direction-card" href="#events" data-direction-link="Дворцы культуры и клубы"><span>01 / Сцена и сообщество</span><h3>Дворцы культуры и клубы</h3><p>Концерты, праздники, творческие встречи и мастер-классы.</p><strong>Смотреть мероприятия ↗</strong></a>
-        <a class="direction-card" href="#events" data-direction-link="Детские школы искусств"><span>02 / Учиться творить</span><h3>Детские школы искусств</h3><p>Музыка, живопись, творчество и занятия для детей.</p><strong>Смотреть мероприятия ↗</strong></a>
-        <a class="direction-card" href="#events" data-direction-link="Библиотечные системы"><span>03 / Книги и знания</span><h3>Библиотечные системы</h3><p>Литературные встречи, познавательные часы и акции.</p><strong>Смотреть мероприятия ↗</strong></a>
-        <a class="direction-card" href="#events" data-direction-link="Парк"><span>04 / Под открытым небом</span><h3>Парк</h3><p>Городские праздники, прогулки и события на свежем воздухе.</p><strong>Смотреть мероприятия ↗</strong></a>
+        <a class="direction-card" href="#institutions" data-direction-link="Дворцы культуры и клубы"><span>01 / Сцена и сообщество</span><h3>Дворцы культуры и клубы</h3><p>Концерты, праздники, творческие встречи и мастер-классы.</p><strong>Смотреть учреждения ↗</strong></a>
+        <a class="direction-card" href="#institutions" data-direction-link="Детские школы искусств"><span>02 / Учиться творить</span><h3>Детские школы искусств</h3><p>Музыка, живопись, творчество и занятия для детей.</p><strong>Смотреть учреждения ↗</strong></a>
+        <a class="direction-card" href="#institutions" data-direction-link="Библиотечные системы"><span>03 / Книги и знания</span><h3>Библиотечные системы</h3><p>Литературные встречи, познавательные часы и акции.</p><strong>Смотреть учреждения ↗</strong></a>
+        <a class="direction-card" href="#institutions" data-direction-link="Парк"><span>04 / Под открытым небом</span><h3>Парк</h3><p>Городские праздники, прогулки и события на свежем воздухе.</p><strong>Смотреть учреждения ↗</strong></a>
+      </div>
+      <div class="nko-highlight" id="nko"><div><p class="eyebrow">Некоммерческие организации</p><h3>Инициативы при учреждениях культуры</h3><p>В справочнике представлены АНО «Процветание Донбасса» и АНО «181 регион». Подробности деятельности и контакты будут добавляться по мере подтверждения.</p></div><div class="nko-links"><a href="#institutions" data-nko-id="nko-protsvetanie">АНО «Процветание Донбасса» ↗</a><a href="#institutions" data-nko-id="nko-181">АНО «181 регион» ↗</a></div></div>
+    </section>
+
+    <section class="section institution-section" id="institutions">
+      <div class="section-heading"><div><p class="eyebrow">Справочник Краснодонского МО</p><h2>Учреждения и организации</h2></div><p class="directions-lead">Нажмите на учреждение, чтобы посмотреть направления, условия приёма, расписание и контакты.</p></div>
+      <div class="institution-tabs" id="institutionTabs" aria-label="Направления учреждений">
+        <button class="filter active" data-institution-group="Все">Все</button>
+        <button class="filter" data-institution-group="Дворцы культуры и клубы">Дворцы и клубы</button>
+        <button class="filter" data-institution-group="Детские школы искусств">Школы искусств</button>
+        <button class="filter" data-institution-group="Библиотечные системы">Библиотеки</button>
+        <button class="filter" data-institution-group="Парк">Парк</button>
+        <button class="filter" data-institution-group="НКО">НКО</button>
+      </div>
+      <div class="institution-list" id="institutionList"></div>
+      <p class="directory-note">Сведения о кружках, приёме, графике и контактах заполняются учреждениями. Пока поле не заполнено, рекомендуем уточнять информацию непосредственно в учреждении.</p>
+    </section>
+
+    <section class="section enrollment-section" id="enrollment">
+      <div class="enrollment-intro"><p class="eyebrow light">Творчество начинается здесь</p><h2>Записать ребёнка на занятия</h2><p>Выберите школу искусств, Дворец культуры, клуб или библиотеку. Посмотрите доступные направления, условия приёма, необходимые документы и способы связи.</p></div>
+      <div class="enrollment-layout">
+        <div class="enrollment-picker"><label for="enrollmentSearch">Найти учреждение</label><input id="enrollmentSearch" type="search" placeholder="Название учреждения или город"><div id="enrollmentChoices" class="enrollment-choices"></div></div>
+        <div class="enrollment-detail" id="enrollmentDetail"><p>Выберите учреждение слева, чтобы посмотреть сведения о записи.</p></div>
       </div>
     </section>
 
@@ -248,7 +272,7 @@
     <button class="dialog-close" data-close-admin aria-label="Закрыть">×</button>
     <div class="admin-head">
       <div><p class="eyebrow">Рабочее пространство</p><h2>Панель учреждения</h2></div>
-      <div class="admin-actions"><button class="button ghost small" id="showSiteForm">Настройки сайта</button><button class="button primary small" id="showEventForm">+ Добавить событие</button></div>
+      <div class="admin-actions"><button class="button ghost small" id="showSiteForm">Настройки сайта</button><button class="button ghost small" id="showInstitutionForm">+ Учреждение</button><button class="button primary small" id="showEventForm">+ Добавить событие</button></div>
     </div>
     <div class="admin-metrics" id="adminMetrics"></div>
     <form class="site-form event-form hidden" id="siteForm">
@@ -280,14 +304,34 @@
       <label>Описание<textarea name="description" rows="3" required placeholder="Коротко расскажите о событии"></textarea></label>
       <div class="form-actions"><button class="button ghost" type="button" id="cancelEvent">Отмена</button><button class="button primary" id="saveEventButton" type="submit">Опубликовать</button></div>
     </form>
+    <form class="event-form hidden" id="institutionForm">
+      <input type="hidden" name="institutionId">
+      <h3 id="institutionFormTitle">Карточка учреждения</h3>
+      <div class="form-grid">
+        <label>Официальное название<input name="name" required maxlength="200"></label>
+        <label>Направление<select name="group" required><option>Детские школы искусств</option><option>Дворцы культуры и клубы</option><option>Библиотечные системы</option><option>Парк</option><option>НКО</option></select></label>
+        <label>Адрес<input name="address" placeholder="Уточняется"></label>
+        <label>Телефон<input name="phone" type="tel" placeholder="Уточняется"></label>
+        <label>Электронная почта<input name="email" type="email" placeholder="Уточняется"></label>
+      </div>
+      <label>Направления подготовки, кружки или деятельность НКО <span>(по одному в строке)</span><textarea name="programs" rows="3" placeholder="Заполните проверенными данными учреждения"></textarea></label>
+      <label>Условия приёма детей или участия<textarea name="admission" rows="2"></textarea></label>
+      <label>Приёмная комиссия или ответственные лица<textarea name="committee" rows="2"></textarea></label>
+      <label>Часы работы и расписание кружков<textarea name="schedule" rows="2"></textarea></label>
+      <label>Как записаться или обратиться<textarea name="requirements" rows="2"></textarea></label>
+      <label>Необходимые документы<textarea name="documents" rows="2"></textarea></label>
+      <div class="form-actions"><button class="button ghost" type="button" id="cancelInstitution">Отмена</button><button class="button primary" type="submit">Сохранить карточку</button></div>
+    </form>
     <div class="admin-columns">
       <section><h3>События и записи</h3><div id="adminEvents" class="admin-list"></div></section>
       <section><h3>Пожелания посетителей</h3><div id="adminIdeas" class="admin-list"></div></section>
     </div>
+    <section class="admin-institution-section"><h3>Карточки учреждений и НКО</h3><p class="directory-note">Правки в панели видны только в этом браузере. Чтобы обновить сайт для всех посетителей, скачайте файл карточек, замените им <code>institutions.js</code> в проекте и опубликуйте изменения на GitHub Pages.</p><button class="button ghost small" id="exportInstitutions" type="button">Скачать карточки для публикации</button><div id="adminInstitutions" class="admin-list"></div></section>
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="september-events.js"></script>
+  <script src="institutions.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

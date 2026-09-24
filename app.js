@@ -3,7 +3,8 @@ const STORAGE = {
   bookings: "culture-circle-bookings",
   ideas: "culture-circle-ideas",
   tickets: "culture-circle-tickets",
-  settings: "culture-circle-settings"
+  settings: "culture-circle-settings",
+  institutions: "culture-circle-institutions"
 };
 
 const defaultSettings = {
@@ -61,8 +62,11 @@ let bookings = load(STORAGE.bookings, []);
 let ideas = load(STORAGE.ideas, []);
 let ticketOrders = load(STORAGE.tickets, []);
 let siteSettings = loadSettings();
+let institutions = load(STORAGE.institutions, defaultInstitutions);
 let activeFilter = "Все";
 let activeDirection = "Все";
+let activeInstitutionGroup = "Все";
+let selectedInstitutionId = "";
 let activeCinema = "Все";
 let posterStyle = "avant";
 
@@ -79,6 +83,69 @@ function save() {
   localStorage.setItem(STORAGE.ideas, JSON.stringify(ideas));
   localStorage.setItem(STORAGE.tickets, JSON.stringify(ticketOrders));
   localStorage.setItem(STORAGE.settings, JSON.stringify(siteSettings));
+  localStorage.setItem(STORAGE.institutions, JSON.stringify(institutions));
+}
+
+function fieldValue(value) {
+  return value && value.trim() ? escapeHtml(value.trim()).replace(/\n/g, "<br>") : '<span class="unfilled">Информация уточняется</span>';
+}
+
+function institutionDetails(item) {
+  const nonprofit = item.groups.includes("НКО");
+  const rows = [
+    [nonprofit ? "Направления деятельности" : "Направления подготовки и кружки", item.programs],
+    [nonprofit ? "Условия участия" : "Условия приёма детей", item.admission],
+    [nonprofit ? "Ответственные лица" : "Приёмная комиссия", item.committee],
+    [nonprofit ? "Часы работы" : "Часы работы кружков", item.schedule],
+    [nonprofit ? "Как обратиться" : "Как записаться", item.requirements],
+    [nonprofit ? "Документы и условия" : "Необходимые документы", item.documents],
+    ["Адрес", item.address]
+  ];
+  const phone = item.phone ? `<a href="tel:${escapeHtml(item.phone.replace(/[^\d+]/g, ""))}">${escapeHtml(item.phone)}</a>` : fieldValue("");
+  const email = item.email ? `<a href="mailto:${escapeHtml(item.email)}">${escapeHtml(item.email)}</a>` : fieldValue("");
+  return `<div class="institution-info">${rows.map(([label, value]) => `<div><strong>${label}</strong><p>${fieldValue(value)}</p></div>`).join("")}<div><strong>Телефон</strong><p>${phone}</p></div><div><strong>Электронная почта</strong><p>${email}</p></div></div>`;
+}
+
+function renderInstitutions() {
+  const visible = institutions.filter((item) => activeInstitutionGroup === "Все" || item.groups.includes(activeInstitutionGroup));
+  $("#institutionList").innerHTML = visible.map((item) => `<details class="institution-card" id="institution-${escapeHtml(item.id)}">
+    <summary><span class="institution-group">${escapeHtml(item.groups[0])}</span><strong>${escapeHtml(item.name)}</strong><span class="institution-open">Подробнее +</span></summary>
+    <div class="institution-content">${institutionDetails(item)}${item.groups.includes("НКО") ? "" : `<button class="button primary small" data-select-institution="${escapeHtml(item.id)}">К записи на занятия →</button>`}</div>
+  </details>`).join("");
+  $("#institutionTabs").querySelectorAll("button").forEach((button) => button.classList.toggle("active", button.dataset.institutionGroup === activeInstitutionGroup));
+  renderEnrollmentChoices();
+}
+
+function renderEnrollmentChoices() {
+  const search = $("#enrollmentSearch").value.trim().toLocaleLowerCase("ru-RU");
+  const available = institutions.filter((item) => !item.groups.includes("НКО") && item.name.toLocaleLowerCase("ru-RU").includes(search));
+  $("#enrollmentChoices").innerHTML = available.length ? available.map((item) => `<button type="button" class="enrollment-choice ${item.id === selectedInstitutionId ? "active" : ""}" data-enrollment-id="${escapeHtml(item.id)}"><span>${escapeHtml(item.groups[0])}</span><strong>${escapeHtml(item.name)}</strong></button>`).join("") : `<p class="unfilled">Учреждения не найдены. Попробуйте другой запрос.</p>`;
+}
+
+function selectInstitution(id) {
+  const item = institutions.find((entry) => entry.id === id);
+  if (!item) return;
+  selectedInstitutionId = id;
+  renderEnrollmentChoices();
+  $("#enrollmentDetail").innerHTML = `<p class="eyebrow">Запись на занятия</p><h3>${escapeHtml(item.name)}</h3>
+    ${institutionDetails(item)}
+    ${item.email ? `<form id="enrollmentRequest" class="enrollment-request"><h4>Подготовить обращение</h4><p>Письмо откроется в вашей почтовой программе. Отправьте его самостоятельно; запись подтверждает учреждение.</p><label>Имя родителя или законного представителя<input name="parent" required autocomplete="name"></label><label>Телефон для ответа<input name="phone" required type="tel" autocomplete="tel"></label><label>Интересующее направление или кружок<input name="program" required></label><button class="button primary" type="submit">Подготовить письмо</button></form>` : `<p class="enrollment-hint">Электронная запись пока недоступна: контактная почта учреждения не указана. Уточните порядок приёма непосредственно в учреждении${item.phone ? ` по телефону ${escapeHtml(item.phone)}` : " после публикации контактов"}.</p>`}`;
+}
+
+function openInstitutionEditor(id = "") {
+  const form = $("#institutionForm");
+  form.reset();
+  const item = institutions.find((entry) => entry.id === id);
+  form.elements.institutionId.value = item?.id || "";
+  $("#institutionFormTitle").textContent = item ? "Редактирование карточки" : "Новое учреждение";
+  if (item) {
+    ["name", "address", "phone", "email", "programs", "admission", "committee", "schedule", "requirements", "documents"].forEach((key) => { form.elements[key].value = item[key] || ""; });
+    form.elements.group.value = item.groups[0];
+  }
+  $("#siteForm").classList.add("hidden");
+  $("#eventForm").classList.add("hidden");
+  form.classList.remove("hidden");
+  form.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function applySiteSettings() {
@@ -103,6 +170,7 @@ function openSiteEditor() {
   });
   form.classList.remove("hidden");
   $("#eventForm").classList.add("hidden");
+  $("#institutionForm").classList.add("hidden");
   form.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -135,6 +203,7 @@ function openEventEditor(eventId = "") {
     $("#saveEventButton").textContent = "Сохранить изменения";
   }
   $("#siteForm").classList.add("hidden");
+  $("#institutionForm").classList.add("hidden");
   form.classList.remove("hidden");
   form.scrollIntoView({ behavior: "smooth", block: "start" });
 }
@@ -285,6 +354,7 @@ function renderAdmin() {
   $("#adminMetrics").innerHTML = `<div class="metric"><strong>${events.length}</strong><span>событий опубликовано</span></div><div class="metric"><strong>${totalVisitors}</strong><span>посетителей записано</span></div><div class="metric"><strong>${ideas.length}</strong><span>пожеланий получено</span></div>`;
   $("#adminEvents").innerHTML = events.length ? events.map((event) => `<div class="admin-item"><div><strong>${escapeHtml(event.title)}</strong><span>${formatEventDate(event.date)} · записано ${eventBookings(event.id)} из ${event.capacity}</span></div><div class="item-actions"><button class="edit-button" data-edit-event="${event.id}">Изменить</button><button class="delete-button" data-delete-event="${event.id}">Удалить</button></div></div>`).join("") : `<div class="empty-state">Событий пока нет</div>`;
   $("#adminIdeas").innerHTML = ideas.length ? ideas.slice().reverse().map((idea) => `<div class="admin-item"><div><strong>${escapeHtml(idea.idea)}</strong><span>${escapeHtml(idea.name)} · ${escapeHtml(idea.format)}</span></div><button class="delete-button" data-delete-idea="${idea.id}">Удалить</button></div>`).join("") : `<div class="empty-state">Пожеланий пока нет</div>`;
+  $("#adminInstitutions").innerHTML = institutions.map((item) => `<div class="admin-item"><div><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.groups.join(" · "))}</span></div><button type="button" class="edit-button" data-edit-institution="${escapeHtml(item.id)}">Изменить</button></div>`).join("");
 }
 
 function openBooking(eventId) {
@@ -333,12 +403,47 @@ $("#directionSelect").addEventListener("change", (event) => {
   renderEvents();
 });
 document.querySelectorAll("[data-direction-link]").forEach((link) => link.addEventListener("click", () => {
-  activeDirection = link.dataset.directionLink;
-  $("#directionSelect").value = activeDirection;
-  activeFilter = "Все";
-  document.querySelectorAll(".filter").forEach((button) => button.classList.toggle("active", button.dataset.filter === "Все"));
-  renderEvents();
+  activeInstitutionGroup = link.dataset.directionLink;
+  renderInstitutions();
 }));
+
+document.querySelectorAll("[data-nko-id]").forEach((link) => link.addEventListener("click", () => {
+  activeInstitutionGroup = "НКО";
+  renderInstitutions();
+  const card = document.getElementById(`institution-${link.dataset.nkoId}`);
+  if (card) card.open = true;
+}));
+
+$("#institutionTabs").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-institution-group]");
+  if (!button) return;
+  activeInstitutionGroup = button.dataset.institutionGroup;
+  renderInstitutions();
+});
+
+$("#institutionList").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-select-institution]");
+  if (!button) return;
+  selectInstitution(button.dataset.selectInstitution);
+  $("#enrollment").scrollIntoView({ behavior: "smooth" });
+});
+
+$("#enrollmentSearch").addEventListener("input", renderEnrollmentChoices);
+$("#enrollmentChoices").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-enrollment-id]");
+  if (button) selectInstitution(button.dataset.enrollmentId);
+});
+
+$("#enrollmentDetail").addEventListener("submit", (event) => {
+  if (event.target.id !== "enrollmentRequest") return;
+  event.preventDefault();
+  const item = institutions.find((entry) => entry.id === selectedInstitutionId);
+  if (!item?.email) return toast("Контактная почта учреждения пока не указана");
+  const data = Object.fromEntries(new FormData(event.target));
+  const subject = `Вопрос о записи на занятия — ${item.name}`;
+  const body = `Здравствуйте! Интересует запись на занятия.\nНаправление: ${data.program}\nРодитель: ${data.parent}\nТелефон для ответа: ${data.phone}\nПрошу сообщить условия приёма и необходимые документы.`;
+  window.location.href = `mailto:${item.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
 
 $("#cinemaFilters").addEventListener("click", (event) => {
   const button = event.target.closest("[data-cinema]");
@@ -391,6 +496,8 @@ $("[data-close-ticket]").addEventListener("click", () => ticketDialog.close());
 document.querySelectorAll("[data-open-admin]").forEach((button) => button.addEventListener("click", () => { renderAdmin(); adminDialog.showModal(); }));
 $("[data-close-admin]").addEventListener("click", () => adminDialog.close());
 $("#showSiteForm").addEventListener("click", openSiteEditor);
+$("#showInstitutionForm").addEventListener("click", () => openInstitutionEditor());
+$("#cancelInstitution").addEventListener("click", () => $("#institutionForm").classList.add("hidden"));
 $("#cancelSite").addEventListener("click", () => $("#siteForm").classList.add("hidden"));
 $("#showEventForm").addEventListener("click", () => openEventEditor());
 $("#cancelEvent").addEventListener("click", () => { resetEventForm(); $("#eventForm").classList.add("hidden"); });
@@ -410,6 +517,40 @@ $("#resetSite").addEventListener("click", () => {
   applySiteSettings();
   openSiteEditor();
   toast("Исходные настройки восстановлены");
+});
+
+$("#institutionForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.currentTarget));
+  const previous = institutions.find((item) => item.id === data.institutionId);
+  const groups = previous?.groups.includes(data.group) ? previous.groups : [data.group];
+  const item = { ...data, id: previous?.id || createId(), groups };
+  delete item.group;
+  delete item.institutionId;
+  if (previous) institutions = institutions.map((entry) => entry.id === item.id ? item : entry);
+  else institutions.push(item);
+  save();
+  renderInstitutions();
+  if (selectedInstitutionId === item.id) selectInstitution(item.id);
+  renderAdmin();
+  event.currentTarget.classList.add("hidden");
+  toast(previous ? "Карточка учреждения обновлена" : "Учреждение добавлено");
+});
+
+$("#adminInstitutions").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-edit-institution]");
+  if (button) openInstitutionEditor(button.dataset.editInstitution);
+});
+
+$("#exportInstitutions").addEventListener("click", () => {
+  const content = `// Справочник учреждений Краснодонского МО.\nconst defaultInstitutions = ${JSON.stringify(institutions, null, 2)};\n`;
+  const url = URL.createObjectURL(new Blob([content], { type: "text/javascript;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "institutions.js";
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+  toast("Файл карточек скачан. Для публикации замените institutions.js в проекте.");
 });
 
 $("#eventForm").addEventListener("submit", (event) => {
@@ -477,3 +618,4 @@ $("#year").textContent = new Date().getFullYear();
 applySiteSettings();
 renderEvents();
 renderCinema();
+renderInstitutions();

@@ -72,9 +72,57 @@ h1 em { font-weight: 400; color: var(--orange); }
 .direction-card h3 { font: 400 25px/1.2 "Prata", serif; margin: 26px 0 12px; }
 .direction-card p { color: var(--muted); font-size: 12px; line-height: 1.6; }
 .direction-card strong { margin-top: auto; font-size: 12px; }
+.nko-highlight { margin-top: 22px; background: var(--green); color: white; padding: 30px; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
+.nko-highlight .eyebrow { margin-bottom: 8px; color: var(--yellow); }
+.nko-highlight h3 { margin: 0; font: 400 24px/1.3 "Prata",serif; }
+.nko-highlight p:last-child { margin: 10px 0 0; max-width: 580px; color: rgba(255,255,255,.7); font-size: 12px; line-height: 1.6; }
+.nko-links { display: grid; gap: 12px; flex-shrink: 0; }
+.nko-links a { border-bottom: 1px solid rgba(255,255,255,.5); padding: 5px 0; font-size: 12px; }
 .direction-filter-row { display: flex; align-items: center; gap: 16px; margin: 0 0 24px; }
 .direction-filter-row label { white-space: nowrap; }
 .direction-filter-row select { max-width: 320px; background: var(--cream); }
+.institution-section { background: #f8f5ed; }
+.institution-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; }
+.institution-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; align-items: start; }
+.institution-card { min-width: 0; background: #fff; border: 1px solid var(--line); }
+.institution-card[open] { box-shadow: var(--shadow); }
+.institution-card summary { cursor: pointer; display: flex; flex-direction: column; gap: 12px; padding: 23px; list-style: none; }
+.institution-card summary::-webkit-details-marker { display: none; }
+.institution-card summary:focus-visible, .enrollment-choice:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+.institution-card summary strong { font: 400 21px/1.35 "Prata", serif; overflow-wrap: anywhere; }
+.institution-group { color: var(--orange); font-size: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: .09em; }
+.institution-open { color: var(--green); font-size: 11px; font-weight: 800; }
+.institution-card[open] .institution-open { color: var(--orange); }
+.institution-content { padding: 0 23px 24px; }
+.institution-info { display: grid; gap: 0; }
+.institution-info > div { border-top: 1px solid var(--line); padding: 12px 0; }
+.institution-info strong { font-size: 11px; }
+.institution-info p { margin: 7px 0 0; font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+.institution-info a { color: var(--green); text-decoration: underline; }
+.unfilled { color: var(--muted); font-style: italic; }
+.directory-note { margin: 25px 0 0; font-size: 11px; color: var(--muted); line-height: 1.6; }
+.enrollment-section { background: var(--green); color: white; }
+.enrollment-intro { max-width: 850px; margin-bottom: 40px; }
+.enrollment-intro .eyebrow { color: var(--yellow); }
+.enrollment-intro > p:last-child { color: rgba(255,255,255,.7); line-height: 1.7; }
+.enrollment-layout { display: grid; grid-template-columns: .85fr 1.15fr; gap: 20px; align-items: start; }
+.enrollment-picker, .enrollment-detail { background: var(--cream); color: var(--ink); padding: 27px; min-width: 0; }
+.enrollment-picker input { margin: 12px 0 15px; }
+.enrollment-choices { max-height: 545px; overflow: auto; display: grid; gap: 7px; }
+.enrollment-choice { width: 100%; text-align: left; border: 1px solid var(--line); background: transparent; padding: 13px 16px; cursor: pointer; }
+.enrollment-choice:hover, .enrollment-choice.active { background: #e8e3d6; border-color: var(--green); }
+.enrollment-choice span, .enrollment-choice strong { display: block; }
+.enrollment-choice span { color: var(--orange); font-size: 9px; margin-bottom: 5px; }
+.enrollment-choice strong { font-size: 12px; line-height: 1.4; }
+.enrollment-detail h3 { font: 400 clamp(22px,3vw,31px)/1.3 "Prata",serif; }
+.enrollment-detail > p:first-child { color: var(--muted); }
+.enrollment-hint { padding: 16px; background: #e8e3d6; line-height: 1.6; font-size: 12px; }
+.enrollment-request { display: grid; gap: 14px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.enrollment-request h4, .enrollment-request p { margin: 0; }
+.enrollment-request p { color: var(--muted); line-height: 1.6; font-size: 11px; }
+.admin-institution-section { margin-top: 30px; }
+.admin-institution-section h3 { font: 400 23px "Prata",serif; }
+.admin-institution-section .admin-list { grid-template-columns: repeat(2,minmax(0,1fr)); }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 45px; }
 h2 { font-size: clamp(38px, 5vw, 64px); line-height: 1.08; }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
@@ -239,6 +287,9 @@ dialog form { display: grid; gap: 16px; }
 }
 
 @media (max-width: 900px) {
+  .nko-highlight { align-items: flex-start; flex-direction: column; }
+  .enrollment-layout { grid-template-columns: 1fr; }
+  .enrollment-choices { max-height: 320px; }
   .direction-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .hero { grid-template-columns: 1fr; padding-top: 60px; }
   .hero-art { height: 420px; margin-top: 20px; }
@@ -252,6 +303,7 @@ dialog form { display: grid; gap: 16px; }
 }
 
 @media (max-width: 640px) {
+  .institution-list, .admin-institution-section .admin-list { grid-template-columns: 1fr; }
   .direction-grid { grid-template-columns: 1fr; }
   .direction-card { min-height: 235px; }
   .direction-filter-row { align-items: stretch; flex-direction: column; }
