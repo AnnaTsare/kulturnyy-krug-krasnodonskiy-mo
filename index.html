@@ -75,6 +75,11 @@
         <button class="filter" data-institution-group="НКО">НКО</button>
       </div>
       <div class="institution-list" id="institutionList"></div>
+      <div class="school-browser hidden" id="schoolBrowser">
+        <div class="school-browser-heading"><p class="eyebrow">Детские школы искусств</p><h3>Выберите школу</h3><p>Откройте вкладку школы, чтобы узнать о подготовке, приёме и документах.</p></div>
+        <div class="school-tabs" id="schoolTabs" role="tablist" aria-label="Детские школы искусств"></div>
+        <div class="school-detail hidden" id="schoolDetail" role="tabpanel" tabindex="0"></div>
+      </div>
       <p class="directory-note">Сведения о кружках, приёме, графике и контактах заполняются учреждениями. Пока поле не заполнено, рекомендуем уточнять информацию непосредственно в учреждении.</p>
     </section>
 
@@ -313,6 +318,8 @@
         <label>Адрес<input name="address" placeholder="Уточняется"></label>
         <label>Телефон<input name="phone" type="tel" placeholder="Уточняется"></label>
         <label>Электронная почта<input name="email" type="email" placeholder="Уточняется"></label>
+        <label>Телефон приёмной комиссии<input name="committeePhone" type="tel" placeholder="Уточняется"></label>
+        <label>Почта приёмной комиссии<input name="committeeEmail" type="email" placeholder="Уточняется"></label>
       </div>
       <label>Направления подготовки, кружки или деятельность НКО <span>(по одному в строке)</span><textarea name="programs" rows="3" placeholder="Заполните проверенными данными учреждения"></textarea></label>
       <label>Условия приёма детей или участия<textarea name="admission" rows="2"></textarea></label>

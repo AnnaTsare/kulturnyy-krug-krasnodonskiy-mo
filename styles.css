@@ -82,6 +82,27 @@ h1 em { font-weight: 400; color: var(--orange); }
 .direction-filter-row label { white-space: nowrap; }
 .direction-filter-row select { max-width: 320px; background: var(--cream); }
 .institution-section { background: #f8f5ed; }
+.school-browser-heading { margin: 12px 0 24px; }
+.school-browser-heading h3 { margin: 0 0 8px; font: 400 32px/1.2 "Prata",serif; }
+.school-browser-heading > p:last-child { margin: 0; color: var(--muted); font-size: 13px; }
+.school-tabs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.school-tab { min-height: 192px; border: 1px solid var(--line); border-top: 4px solid var(--yellow); background: white; text-align: left; padding: 22px; display: flex; flex-direction: column; cursor: pointer; }
+.school-tab:hover, .school-tab.active { border-color: var(--green); border-top-color: var(--orange); box-shadow: var(--shadow); }
+.school-tab:focus-visible, .institution-school-link:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+.school-tab > span { color: var(--orange); text-transform: uppercase; letter-spacing: .1em; font-size: 10px; font-weight: 800; }
+.school-tab strong { margin: 17px 0; font: 400 17px/1.3 "Prata",serif; overflow-wrap: anywhere; }
+.school-tab small { margin-top: auto; font-size: 11px; color: var(--green); font-weight: 800; }
+.school-detail { margin-top: 25px; padding: clamp(22px,4vw,48px); background: #e8e3d6; scroll-margin-top: 105px; }
+.school-back { padding: 0; margin-bottom: 32px; background: none; border: 0; border-bottom: 1px solid; cursor: pointer; font-weight: 800; font-size: 12px; }
+.school-detail h3 { max-width: 900px; margin: 0 0 30px; font: 400 clamp(27px,4vw,46px)/1.22 "Prata",serif; }
+.school-detail-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-bottom: 30px; }
+.school-detail-grid section { background: var(--cream); padding: 24px; overflow-wrap: anywhere; }
+.school-detail-grid section > span { color: var(--orange); text-transform: uppercase; font-size: 10px; letter-spacing: .1em; font-weight: 800; }
+.school-detail-grid h4 { margin: 14px 0; font: 400 22px/1.3 "Prata",serif; }
+.school-detail-grid p { font-size: 12px; line-height: 1.7; }
+.school-detail-grid a { color: var(--green); text-decoration: underline; }
+.institution-school-link { cursor: pointer; padding: 23px; text-align: left; display: flex; flex-direction: column; gap: 12px; }
+.institution-school-link strong { font: 400 21px/1.3 "Prata",serif; }
 .institution-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; }
 .institution-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; align-items: start; }
 .institution-card { min-width: 0; background: #fff; border: 1px solid var(--line); }
@@ -287,6 +308,7 @@ dialog form { display: grid; gap: 16px; }
 }
 
 @media (max-width: 900px) {
+  .school-tabs { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .nko-highlight { align-items: flex-start; flex-direction: column; }
   .enrollment-layout { grid-template-columns: 1fr; }
   .enrollment-choices { max-height: 320px; }
@@ -303,6 +325,7 @@ dialog form { display: grid; gap: 16px; }
 }
 
 @media (max-width: 640px) {
+  .school-tabs, .school-detail-grid { grid-template-columns: 1fr; }
   .institution-list, .admin-institution-section .admin-list { grid-template-columns: 1fr; }
   .direction-grid { grid-template-columns: 1fr; }
   .direction-card { min-height: 235px; }

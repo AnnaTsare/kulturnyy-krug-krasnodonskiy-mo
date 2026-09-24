@@ -18,5 +18,5 @@ const defaultInstitutions = [
 ].map((item) => ({
   ...item,
   address: "", programs: "", admission: "", committee: "", schedule: "",
-  requirements: "", documents: "", phone: "", email: ""
+  requirements: "", documents: "", phone: "", email: "", committeePhone: "", committeeEmail: ""
 }));
