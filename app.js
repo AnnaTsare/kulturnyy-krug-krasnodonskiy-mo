@@ -17,14 +17,7 @@ const defaultSettings = {
   contactEmail: "culture@example.ru"
 };
 
-const defaultEvents = [
-  { id: "e1", title: "Музыка старого города", category: "Концерт", date: futureDate(4, 19), venue: "Большой зал", capacity: 120, color: "#d65231", description: "Камерный оркестр исполнит музыку, вдохновлённую историей городских улиц." },
-  { id: "e2", title: "Человек, который смеётся", category: "Театр", date: futureDate(9, 18), venue: "Камерная сцена", capacity: 70, color: "#355b87", description: "Пластический спектакль по мотивам романа Виктора Гюго о достоинстве и любви." },
-  { id: "e3", title: "Глина и тёплый свет", category: "Мастер-класс", date: futureDate(13, 12), venue: "Творческая студия", capacity: 18, color: "#b4773f", description: "Создадим подсвечник из глины вручную и узнаем основы работы с материалом." },
-  { id: "e4", title: "Архитектура памяти", category: "Лекция", date: futureDate(17, 18), venue: "Лекторий", capacity: 90, color: "#48715f", description: "Разговор о том, как здания сохраняют память места и меняют жизнь города." },
-  { id: "e5", title: "Звуки природы", category: "Концерт", date: futureDate(23, 16), venue: "Внутренний двор", capacity: 150, color: "#597b3a", description: "Экспериментальная музыка, полевые записи и живые инструменты под открытым небом." },
-  { id: "e6", title: "Сказки на ночь", category: "Театр", date: futureDate(29, 17), venue: "Малая сцена", capacity: 45, color: "#72518a", description: "Тёплый семейный спектакль с теневым театром для детей и взрослых." }
-];
+const defaultEvents = septemberEvents;
 
 const movies = [
   { id: "m1", title: "Северный ветер", cinema: "Победа", city: "Краснодон", genre: "Приключения", duration: "1 ч 48 мин", age: "12+", sessions: ["11:20", "15:40", "19:10"], price: 250, color: "#345f78", pushkin: true },
@@ -59,12 +52,17 @@ function loadSettings() {
   }
 }
 
-let events = load(STORAGE.events, defaultEvents);
+const storedEvents = load(STORAGE.events, defaultEvents);
+// Убираем старые демонстрационные карточки, сохраняя добавленные пользователем события.
+let events = storedEvents.some((item) => /^e[1-6]$/.test(item.id))
+  ? [...defaultEvents, ...storedEvents.filter((item) => !/^e[1-6]$/.test(item.id) && !item.id.startsWith("sep"))]
+  : storedEvents;
 let bookings = load(STORAGE.bookings, []);
 let ideas = load(STORAGE.ideas, []);
 let ticketOrders = load(STORAGE.tickets, []);
 let siteSettings = loadSettings();
 let activeFilter = "Все";
+let activeDirection = "Все";
 let activeCinema = "Все";
 let posterStyle = "avant";
 
@@ -126,6 +124,7 @@ function openEventEditor(eventId = "") {
     form.elements.eventId.value = event.id;
     form.elements.title.value = event.title;
     form.elements.category.value = event.category;
+    form.elements.direction.value = event.direction || "Дворцы культуры и клубы";
     const localDate = new Date(new Date(event.date).getTime() - new Date(event.date).getTimezoneOffset() * 60000);
     form.elements.date.value = localDate.toISOString().slice(0, 16);
     form.elements.venue.value = event.venue;
@@ -182,7 +181,7 @@ function formatEventDate(value) {
 
 function renderEvents() {
   const visible = events
-    .filter((event) => activeFilter === "Все" || event.category === activeFilter)
+    .filter((event) => (activeFilter === "Все" || event.category === activeFilter) && (activeDirection === "Все" || event.direction === activeDirection))
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   eventGrid.innerHTML = visible.map((event) => {
@@ -197,8 +196,8 @@ function renderEvents() {
       <div class="event-body">
         <h3>${escapeHtml(event.title)}</h3>
         <p>${escapeHtml(event.description)}</p>
-        <div class="event-info"><span>◷ ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}</span><span>⌖ ${escapeHtml(event.venue)}</span></div>
-        <div class="event-footer"><span class="seats">${free ? `Осталось мест: ${free}` : "Мест нет"}</span><button class="book-button" data-book="${event.id}" ${free ? "" : "disabled"}>Записаться →</button></div>
+        <div class="event-info"><span>◷ ${event.dateRange ? escapeHtml(event.dateRange) : event.timeTbd ? "Время уточняется" : `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`}</span><span>⌖ ${escapeHtml(event.venue)}</span></div>
+        <div class="event-footer"><span class="seats">${event.planEvent ? escapeHtml(event.direction || "Событие") : free ? `Осталось мест: ${free}` : "Мест нет"}</span>${event.planEvent ? `<button class="book-button" data-event-poster="${event.id}">Афиша →</button>` : `<button class="book-button" data-book="${event.id}" ${free ? "" : "disabled"}>Записаться →</button>`}</div>
       </div>
     </article>`;
   }).join("");
@@ -211,9 +210,9 @@ function renderSummary() {
   $("#eventCount").textContent = events.length;
   $("#visitorCount").textContent = bookings.reduce((sum, item) => sum + Number(item.tickets), 0);
   $("#ideaCount").textContent = ideas.length;
-  const next = [...events].filter((item) => new Date(item.date) > new Date()).sort((a, b) => new Date(a.date) - new Date(b.date))[0];
+  const next = [...events].filter((item) => item.dateRange ? new Date("2026-10-01T00:00:00") > new Date() : item.timeTbd ? new Date(item.date).toDateString() >= new Date().toDateString() : new Date(item.date) > new Date()).sort((a, b) => new Date(a.date) - new Date(b.date))[0];
   $("#nextEventTitle").textContent = next?.title || "Скоро появится";
-  $("#nextEventDate").textContent = next ? formatEventDate(next.date) : "Следите за обновлениями";
+  $("#nextEventDate").textContent = next ? next.dateRange || (next.timeTbd ? `${new Date(next.date).getDate()} сентября · время уточняется` : formatEventDate(next.date)) : "Следите за обновлениями";
 }
 
 function fillPosterEvents() {
@@ -248,18 +247,20 @@ function drawPoster() {
   ctx.fillText("КУЛЬТУРНЫЙ КРУГ · КРАСНОДОНСКИЙ МО", 62, 70);
   ctx.font = "600 18px Manrope, sans-serif";
   ctx.fillText(event.category.toUpperCase(), 62, 220);
-  drawWrappedText(ctx, event.title, 62, 290, 570, 76, "56px Prata, serif", p.ink);
+  const titleSize = event.title.length > 58 ? 33 : event.title.length > 38 ? 43 : 56;
+  drawWrappedText(ctx, event.title, 62, 290, 570, titleSize + 15, `${titleSize}px Prata, serif`, p.ink);
   const date = new Date(event.date);
   ctx.fillStyle = p.ink;
   ctx.font = "400 42px Prata, serif";
-  ctx.fillText(`${date.getDate()} ${months[date.getMonth()]}`, 62, 680);
+  ctx.fillText(event.dateRange ? `${event.dateRange} ${date.getFullYear()}` : `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`, 62, 665);
   ctx.font = "600 20px Manrope, sans-serif";
-  ctx.fillText(`${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}  /  ${event.venue}`, 62, 725);
+  ctx.fillText(event.timeTbd ? "Время уточняется" : `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`, 62, 707);
+  drawWrappedText(ctx, event.venue, 62, 742, 575, 24, "500 15px Manrope, sans-serif", p.ink);
   ctx.fillStyle = p.accent;
   ctx.fillRect(62, 790, 130, 5);
   ctx.fillStyle = p.ink;
   ctx.font = "500 15px Manrope, sans-serif";
-  ctx.fillText("ВХОД ПО ПРЕДВАРИТЕЛЬНОЙ РЕГИСТРАЦИИ", 62, 835);
+  ctx.fillText(event.planEvent ? "По плану мероприятий Краснодонского МО" : "ВХОД ПО ПРЕДВАРИТЕЛЬНОЙ РЕГИСТРАЦИИ", 62, 835);
 }
 
 function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, font, color) {
@@ -316,9 +317,28 @@ $("#filters").addEventListener("click", (event) => {
 });
 
 eventGrid.addEventListener("click", (event) => {
+  const posterButton = event.target.closest("[data-event-poster]");
+  if (posterButton) {
+    $("#posterEvent").value = posterButton.dataset.eventPoster;
+    drawPoster();
+    $("#poster").scrollIntoView({ behavior: "smooth" });
+    return;
+  }
   const button = event.target.closest("[data-book]");
   if (button) openBooking(button.dataset.book);
 });
+
+$("#directionSelect").addEventListener("change", (event) => {
+  activeDirection = event.target.value;
+  renderEvents();
+});
+document.querySelectorAll("[data-direction-link]").forEach((link) => link.addEventListener("click", () => {
+  activeDirection = link.dataset.directionLink;
+  $("#directionSelect").value = activeDirection;
+  activeFilter = "Все";
+  document.querySelectorAll(".filter").forEach((button) => button.classList.toggle("active", button.dataset.filter === "Все"));
+  renderEvents();
+}));
 
 $("#cinemaFilters").addEventListener("click", (event) => {
   const button = event.target.closest("[data-cinema]");
@@ -395,7 +415,8 @@ $("#resetSite").addEventListener("click", () => {
 $("#eventForm").addEventListener("submit", (event) => {
   event.preventDefault();
   const data = Object.fromEntries(new FormData(event.currentTarget));
-  const normalized = { ...data, id: data.eventId || createId(), capacity: Number(data.capacity), date: new Date(data.date).toISOString() };
+  const previous = events.find((item) => item.id === data.eventId);
+  const normalized = { ...previous, ...data, id: data.eventId || createId(), capacity: Number(data.capacity), date: new Date(data.date).toISOString() };
   delete normalized.eventId;
   const existingIndex = events.findIndex((item) => item.id === normalized.id);
   if (existingIndex >= 0) events[existingIndex] = normalized;

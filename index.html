@@ -20,6 +20,7 @@
     <button class="menu-button" id="menuButton" aria-label="Открыть меню" aria-expanded="false">Меню</button>
     <nav id="mainNav">
       <a href="#events">События</a>
+      <a href="#directions">Направления</a>
       <a href="#cinema">Кино</a>
       <a href="#poster">Афиши</a>
       <a href="#feedback">Пожелания</a>
@@ -51,6 +52,16 @@
       </div>
     </section>
 
+    <section class="section directions-section" id="directions">
+      <div class="section-heading"><div><p class="eyebrow">Учреждения культуры</p><h2>Выберите направление</h2></div><p class="directions-lead">События, творчество и места встреч по всему Краснодонскому муниципальному округу.</p></div>
+      <div class="direction-grid">
+        <a class="direction-card" href="#events" data-direction-link="Дворцы культуры и клубы"><span>01 / Сцена и сообщество</span><h3>Дворцы культуры и клубы</h3><p>Концерты, праздники, творческие встречи и мастер-классы.</p><strong>Смотреть мероприятия ↗</strong></a>
+        <a class="direction-card" href="#events" data-direction-link="Детские школы искусств"><span>02 / Учиться творить</span><h3>Детские школы искусств</h3><p>Музыка, живопись, творчество и занятия для детей.</p><strong>Смотреть мероприятия ↗</strong></a>
+        <a class="direction-card" href="#events" data-direction-link="Библиотечные системы"><span>03 / Книги и знания</span><h3>Библиотечные системы</h3><p>Литературные встречи, познавательные часы и акции.</p><strong>Смотреть мероприятия ↗</strong></a>
+        <a class="direction-card" href="#events" data-direction-link="Парк"><span>04 / Под открытым небом</span><h3>Парк</h3><p>Городские праздники, прогулки и события на свежем воздухе.</p><strong>Смотреть мероприятия ↗</strong></a>
+      </div>
+    </section>
+
     <section class="stats-strip" aria-label="Статистика">
       <div><strong id="eventCount">0</strong><span>событий в афише</span></div>
       <div><strong id="visitorCount">0</strong><span>зрителей записано</span></div>
@@ -60,19 +71,21 @@
     <section class="section events-section" id="events">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">Афиша</p>
-          <h2>Ближайшие события</h2>
+          <p class="eyebrow">План мероприятий · сентябрь 2026</p>
+          <h2>События до конца сентября</h2>
         </div>
         <div class="filters" id="filters" aria-label="Фильтр событий">
           <button class="filter active" data-filter="Все">Все</button>
           <button class="filter" data-filter="Концерт">Концерты</button>
-          <button class="filter" data-filter="Театр">Театр</button>
+          <button class="filter" data-filter="Праздник">Праздники</button>
           <button class="filter" data-filter="Мастер-класс">Мастер-классы</button>
-          <button class="filter" data-filter="Лекция">Лекции</button>
+          <button class="filter" data-filter="Встреча">Встречи</button>
+          <button class="filter" data-filter="Акция">Акции</button>
         </div>
       </div>
+      <div class="direction-filter-row"><label for="directionSelect">Направление</label><select id="directionSelect"><option value="Все">Все направления</option><option>Дворцы культуры и клубы</option><option>Детские школы искусств</option><option>Библиотечные системы</option><option>Парк</option></select></div>
       <div class="event-grid" id="eventGrid"></div>
-      <div class="empty-state hidden" id="eventsEmpty">В этой категории пока нет событий.</div>
+      <div class="empty-state hidden" id="eventsEmpty">В выбранном направлении мероприятий до конца сентября в предоставленном плане нет. Выберите другое направление.</div>
     </section>
 
     <section class="section cinema-section" id="cinema">
@@ -257,10 +270,11 @@
       <h3 id="eventFormTitle">Новое событие</h3>
       <div class="form-grid">
         <label>Название<input name="title" required placeholder="Название события"></label>
-        <label>Категория<select name="category" required><option>Концерт</option><option>Театр</option><option>Мастер-класс</option><option>Лекция</option><option>Выставка</option></select></label>
+        <label>Категория<select name="category" required><option>Концерт</option><option>Праздник</option><option>Встреча</option><option>Акция</option><option>Мастер-класс</option><option>Церемония</option><option>Театр</option><option>Лекция</option><option>Выставка</option></select></label>
+        <label>Направление<select name="direction" required><option>Дворцы культуры и клубы</option><option>Детские школы искусств</option><option>Библиотечные системы</option><option>Парк</option></select></label>
         <label>Дата и время<input name="date" type="datetime-local" required></label>
         <label>Место<input name="venue" required placeholder="Зал или адрес"></label>
-        <label>Количество мест<input name="capacity" type="number" min="1" value="50" required></label>
+        <label>Количество мест<input name="capacity" type="number" min="0" value="50" required></label>
         <label>Цвет афиши<input name="color" type="color" value="#e55b32"></label>
       </div>
       <label>Описание<textarea name="description" rows="3" required placeholder="Коротко расскажите о событии"></textarea></label>
@@ -273,6 +287,7 @@
   </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="september-events.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
